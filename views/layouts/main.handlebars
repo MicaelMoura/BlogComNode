@@ -10,7 +10,11 @@
 <body>
     {{!-- O símbolo > na linha de baixo faz com que o handlebars procure dentro da pasta "partials" --}}
     {{>_navbar}}
-    {{{body}}}
+
+    <div class="container mt-4">
+        {{>_msg}}
+        {{{body}}}
+    </div>    
 </body>
 {{!-- Bibliotecas do Bootstrap --}}
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>

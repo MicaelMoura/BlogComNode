@@ -13,7 +13,15 @@ const Categoria = mongoose.model("Categorias");
 
     //Lista categorias
     router.get('/categorias', (req, res)=>{
-        res.render('admin/categorias');
+        Categoria.find().lean()
+        .sort({date: 'desc'})
+        .then((categorias)=>{
+            res.render('admin/categorias', {categorias: categorias});
+        })
+        .catch((err)=>{
+            req.flash('error_msg','Erro ao listar as categorias: "'+err+'."');
+            res.redirect("/admin");
+        })
     });
     
     //Form para adicionar nova categoria
@@ -67,6 +75,52 @@ const Categoria = mongoose.model("Categorias");
                 res.redirect('/admin');
             });
         }
+    });
+
+    // Edita categoria
+    router.get("/categorias/edit/:id",(req, res)=>{
+        // Pesquiso essa categoria no banco
+        Categoria.findById(req.params.id).lean()
+            .then((cat)=>{
+                // Mando a categoria para a página de edição
+                res.render("admin/editcategoria",{categoria: cat});
+            })
+            .catch((err)=>{
+                req.flash('error_msg','Categoria não encontrada');
+                res.redirect('/admin/categorias');
+            });
+    });
+
+    // Salva edição
+    router.post("/categorias/edit/salvar", (req, res)=>{
+        Categoria.findById(req.body.id)
+            .then((cat)=>{
+                cat.nome = req.body.nome;
+                cat.slug = req.body.slug;
+
+                cat.save()
+                .then(()=>{
+                    req.flash('success_msg','Categoria salva com sucesso!');
+                    res.redirect('/admin/categorias');
+                })
+                .catch((err)=>{
+                    req.flash('success_msg','Erro ao editar a categoria: '+err);
+                    res.redirect('/admin/categorias');                
+                });          
+            });
+    });
+
+    // Remover categoria
+    router.get("/categorias/remove/:id",(req, res)=>{
+        Categoria.deleteOne({_id: req.params.id})
+            .then(()=>{
+                    req.flash('success_msg','Categoria removida!');
+                    res.redirect('/admin/categorias');
+            })
+            .catch((err)=>{
+                req.flash('success_msg','Erro ao apagar a categoria: '+err);
+                res.redirect('/admin/categorias');                
+            });
     });
 
 //Exporta o módulo

@@ -1,9 +1,11 @@
 require("../models/Categoria");
+require("../models/Postagem");
 
 const express = require('express');
 const router = express.Router();  //Componente do Express para transformar esse arquivo em arquivo de rotas
 const mongoose = require('mongoose');
 const Categoria = mongoose.model("Categorias");
+const Postagem = mongoose.model("Postagens");
 
 //Rotas Administrativas
     //Painel ADM
@@ -120,6 +122,121 @@ const Categoria = mongoose.model("Categorias");
             .catch((err)=>{
                 req.flash('success_msg','Erro ao apagar a categoria: '+err);
                 res.redirect('/admin/categorias');                
+            });
+    });
+
+    // Lista postagens
+    router.get('/postagens', (req, res)=>{
+        Postagem.find().lean()
+            .sort({data: 'desc'})
+            .populate('categoria')
+            .then((postagens)=>{
+                res.render('admin/postagens', {posts: postagens});
+            })
+            .catch((err)=>{
+                req.flash('error_msg','Erro ao exibir as postagens!');
+                res.redirect('/admin');
+            });
+    });
+
+    // Form para adiciona postagem
+    router.get('/postagens/add', (req, res)=>{
+        Categoria.find().lean()            
+            .then((categorias)=>{
+                res.render('admin/addpostagens',{categorias: categorias});
+            })
+            .catch((err)=>{
+                req.flash('error_msg','Erro ao carregar!');
+                res.redirect('/admin/postagens');
+            });
+    });
+
+    // Adiciona postagem
+    router.post('/postagens/add/nova', (req, res)=>{
+        // Valida os dados
+            ///////// Por enquanto vou apenas verificar se a categoria que ele enviou tem algum valor
+            if (req.body.categoria == -1){
+                req.flash('error_msg','Por favor, cadastre uma categoria');
+                res.redirect('/admin/postagens/add');
+            }
+            else {
+                // Cria um novo objeto com os dados vindos do req
+                const novaPostagem = {
+                    titulo: req.body.titulo,
+                    slug: req.body.slug,
+                    descricao: req.body.descricao,
+                    conteudo: req.body.conteudo,
+                    categoria: req.body.categoria
+                };
+                
+                // Salva
+                new Postagem(novaPostagem)
+                .save()
+                    .then(()=>{
+                        req.flash('success_msg','Nova postagem criada');
+                        res.redirect('/admin/postagens');
+                    })
+                    .catch((err)=>{
+                        req.flash('error_msg','Erro ao criar nova postagem');
+                        res.redirect('/admin/postagens/add');
+                    });
+            }
+    });
+
+    // Edita postagem
+    router.get("/postagens/edit/:id",(req, res)=>{
+        // Pesquiso essa categoria no banco
+        Postagem.findById(req.params.id).lean()
+            .then((post)=>{
+                Categoria.find().lean()
+                    .then((cat)=>{
+                        // Mando a categoria para a página de edição
+                        res.render("admin/editpostagem",{postagem: post, categorias: cat});
+                    })
+                    .catch((err)=>{
+                        req.flash('error_msg','Erro ao carregar as categorias');
+                        res.redirect('/admin/postagens');
+                    });
+            })
+            .catch((err)=>{
+                req.flash('error_msg','Postagem não encontrada');
+                res.redirect('/admin/postagens');
+            });
+    });
+
+    // Salva edição de postagem
+    router.post("/postagens/edit/salvar/:id", (req, res)=>{
+        Postagem.findById(req.params.id)
+            .then((post)=>{
+                post.titulo = req.body.titulo;
+                post.slug = req.body.slug;
+                post.descricao = req.body.descricao;
+                post.conteudo = req.body.conteudo;
+                post.categoria = req.body.categoria;
+
+                post.save()
+                .then(()=>{
+                    req.flash('success_msg','Postagem editada com sucesso!');
+                    res.redirect('/admin/postagens');
+                })
+                .catch((err)=>{
+                    req.flash('success_msg','Erro ao editar a postagem!');
+                    res.redirect('/admin/categorias');
+                    console.log(err);
+                });          
+            });
+    });
+
+    // Remover postagem
+    router.get("/postagens/remove/:id",(req, res)=>{
+        Postagem.deleteOne({_id: req.params.id})
+            .then(()=>{
+                    req.flash('success_msg','Postagem removida!');
+                    res.redirect('/admin/postagens');
+            })
+            .catch((err)=>{
+                req.flash('success_msg','Erro ao apagar a postagem: '+err);
+                res.redirect('/admin/postagens');                
             });
     });
 

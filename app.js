@@ -7,9 +7,14 @@
     const path = require('path');
     const session = require('express-session');
     const flash = require('connect-flash');
+    require('./models/Postagem');
+    const Postagem = mongoose.model('Postagens');
+    // require('./models/Categoria');
+    // const Categoria = mongoose.model('categorias');
 
     //Módulos de rotas
     const admin = require('./routes/admin');
+    const postagens = require('./routes/postagens');
 
 //Configurações
     //Session
@@ -57,12 +62,29 @@
         app.use(express.static(path.join(__dirname,"public")));
 
 //Rotas
+    //Index
     app.get('/',(req, res)=>{
-        res.redirect('/admin');
+        Postagem.find().lean()
+            .populate('categoria')
+            .sort({data: 'desc'})
+            .then((postagens)=>{
+                res.render("index",{postagens: postagens});
+            })
+            .catch((err)=>{
+                req.flash('error_msg','Houve um erro ao carregar a página.')
+                res.redirect("/404");
+            });
+    });
+
+    // 404
+    app.get("/404", (req, res)=>{
+        res.send("Página não encontrada");
     });
 
     //admin
     app.use("/admin", admin); //O admin é o prefixo para o grupo de rotas do arquivo admin.js
+
+    app.use("/postagens", postagens);
 
 //Inicia Servidor
     //Variáveis

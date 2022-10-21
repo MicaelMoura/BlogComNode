@@ -9,12 +9,11 @@
     const flash = require('connect-flash');
     require('./models/Postagem');
     const Postagem = mongoose.model('Postagens');
-    // require('./models/Categoria');
-    // const Categoria = mongoose.model('categorias');
 
     //Módulos de rotas
     const admin = require('./routes/admin');
     const postagens = require('./routes/postagens');
+    const usuarios = require('./routes/usuarios');
 
 //Configurações
     //Session
@@ -81,10 +80,10 @@
         res.send("Página não encontrada");
     });
 
-    //admin
+//Grupo de Roas
     app.use("/admin", admin); //O admin é o prefixo para o grupo de rotas do arquivo admin.js
-
     app.use("/postagens", postagens);
+    app.use("/usuarios", usuarios);
 
 //Inicia Servidor
     //Variáveis

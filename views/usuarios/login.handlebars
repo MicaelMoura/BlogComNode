@@ -1,13 +1,17 @@
 <h4>Login:</h4>
 
-<form action="" method="post">
+<form action="/usuarios/login" method="post">
     <div class="card shadow mt-4">
         <div class="card-body">
             <label for="email">E-mail:</label>
                 <input type="email" name="email" class="form-control mb-2" required>
             <label for="senha">Senha:</label>
-                <input type="password" name="senha" class="form-control" required>
+                <input type="password" name="senha" class="form-control" required>            
             <input type="submit" value="Entrar" class="btn btn-success mt-4">
-        </div>
+        </div>        
     </div>
+    {{#if message}}
+    <br>
+    <div class="alert alert-danger text-center p-2 ">{{message}}</div>
+    {{/if}}
 </form>

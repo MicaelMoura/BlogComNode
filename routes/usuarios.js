@@ -5,10 +5,35 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const Usuario = mongoose.model('usuarios');
 const bcrypt = require('bcryptjs');
+const passport = require('passport');
 
 // Formulário de login
 router.get('/login', (req, res)=>{
-    res.render('usuarios/login');
+     if (req.query.fail) {
+        res.render('usuarios/login', {message: 'Usuário e/ou senha inválidos!'});
+    }
+    else {
+        res.render('usuarios/login', {message: null});
+    }
+});
+
+// Login
+router.post('/login', 
+    passport.authenticate(
+        'local',
+        {
+            successRedirect: '/',
+            failureRedirect: '/usuarios/login?fail=true' 
+        }
+    )
+);
+
+// Logout
+router.get('/logout', (req, res, next)=>{
+    req.logOut((err)=>{
+        if (err) { return next(err); }
+        res.redirect('/');
+    })
 });
 
 // Formulário de cadastro de novo usuário

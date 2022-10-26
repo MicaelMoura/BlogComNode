@@ -7,14 +7,16 @@ const mongoose = require('mongoose');
 const Categoria = mongoose.model("Categorias");
 const Postagem = mongoose.model("Postagens");
 
+const {eAdmin} = require('../helpers/eAdmin');
+
 //Rotas Administrativas
     //Painel ADM
-    router.get('/', (req, res)=>{
+    router.get('/', eAdmin, (req, res)=>{
         res.render('admin/index');
     });
 
     //Lista categorias
-    router.get('/categorias', (req, res)=>{
+    router.get('/categorias', eAdmin, (req, res)=>{
         Categoria.find().lean()
         .sort({date: 'desc'})
         .then((categorias)=>{
@@ -27,12 +29,12 @@ const Postagem = mongoose.model("Postagens");
     });
     
     //Form para adicionar nova categoria
-    router.get('/categorias/add', (req, res)=>{
+    router.get('/categorias/add', eAdmin, (req, res)=>{
         res.render('admin/addcategoria');
     });
 
     //Adiciona nova categoria
-    router.post('/categorias/novacategoria', (req, res)=>{
+    router.post('/categorias/novacategoria', eAdmin, (req, res)=>{
         // Faz a validação antes de cadastrar a categoria
         
         var erros = [];
@@ -80,7 +82,7 @@ const Postagem = mongoose.model("Postagens");
     });
 
     // Edita categoria
-    router.get("/categorias/edit/:id",(req, res)=>{
+    router.get("/categorias/edit/:id", eAdmin, (req, res)=>{
         // Pesquiso essa categoria no banco
         Categoria.findById(req.params.id).lean()
             .then((cat)=>{
@@ -94,7 +96,7 @@ const Postagem = mongoose.model("Postagens");
     });
 
     // Salva edição
-    router.post("/categorias/edit/salvar", (req, res)=>{
+    router.post("/categorias/edit/salvar", eAdmin, (req, res)=>{
         Categoria.findById(req.body.id)
             .then((cat)=>{
                 cat.nome = req.body.nome;
@@ -113,7 +115,7 @@ const Postagem = mongoose.model("Postagens");
     });
 
     // Remover categoria
-    router.get("/categorias/remove/:id",(req, res)=>{
+    router.get("/categorias/remove/:id", eAdmin, (req, res)=>{
         Categoria.deleteOne({_id: req.params.id})
             .then(()=>{
                     req.flash('success_msg','Categoria removida!');
@@ -126,7 +128,7 @@ const Postagem = mongoose.model("Postagens");
     });
 
     // Lista postagens
-    router.get('/postagens', (req, res)=>{
+    router.get('/postagens', eAdmin, (req, res)=>{
         Postagem.find().lean()
             .sort({data: 'desc'})
             .populate('categoria')
@@ -140,7 +142,7 @@ const Postagem = mongoose.model("Postagens");
     });
 
     // Form para adiciona postagem
-    router.get('/postagens/add', (req, res)=>{
+    router.get('/postagens/add', eAdmin, (req, res)=>{
         Categoria.find().lean()            
             .then((categorias)=>{
                 res.render('admin/addpostagens',{categorias: categorias});
@@ -152,7 +154,7 @@ const Postagem = mongoose.model("Postagens");
     });
 
     // Adiciona postagem
-    router.post('/postagens/add/nova', (req, res)=>{
+    router.post('/postagens/add/nova', eAdmin, (req, res)=>{
         // Valida os dados
             ///////// Por enquanto vou apenas verificar se a categoria que ele enviou tem algum valor
             if (req.body.categoria == -1){
@@ -184,7 +186,7 @@ const Postagem = mongoose.model("Postagens");
     });
 
     // Edita postagem
-    router.get("/postagens/edit/:id",(req, res)=>{
+    router.get("/postagens/edit/:id", eAdmin, (req, res)=>{
         // Pesquiso essa categoria no banco
         Postagem.findById(req.params.id).lean()
             .then((post)=>{
@@ -205,7 +207,7 @@ const Postagem = mongoose.model("Postagens");
     });
 
     // Salva edição de postagem
-    router.post("/postagens/edit/salvar/:id", (req, res)=>{
+    router.post("/postagens/edit/salvar/:id", eAdmin, (req, res)=>{
         Postagem.findById(req.params.id)
             .then((post)=>{
                 post.titulo = req.body.titulo;
@@ -228,7 +230,7 @@ const Postagem = mongoose.model("Postagens");
     });
 
     // Remover postagem
-    router.get("/postagens/remove/:id",(req, res)=>{
+    router.get("/postagens/remove/:id", eAdmin, (req, res)=>{
         Postagem.deleteOne({_id: req.params.id})
             .then(()=>{
                     req.flash('success_msg','Postagem removida!');

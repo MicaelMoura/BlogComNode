@@ -5,10 +5,12 @@
     const bodyParser = require('body-parser');
     const mongoose = require('mongoose');
     const path = require('path');
-    const session = require('express-session');
     const flash = require('connect-flash');
     require('./models/Postagem');
     const Postagem = mongoose.model('Postagens');
+    const passport = require('passport');
+    const session = require('express-session');
+    require('./config/auth')(passport);
 
     //Módulos de rotas
     const admin = require('./routes/admin');
@@ -19,18 +21,26 @@
     //Session
         app.use(session({
             secret: "F&6xb!Ls*#d6$*aj6WL#@@U3",
-            resave: true,
-            saveUnitialized: true
+            resave: true, // Se a cada requisição deve salvar a sessão
+            saveUnitialized: true, // Se deve salvar sesões anônimas
+            cookie: { maxAge: 30 * 60 * 1000 } // Duração do cookie valido (min * seg * mili seg) [Nesse caso, será 2 minutos]
+            //store: // A sessão, por padrão, é salva na memória, para salvar no db precisa preencher isso
         }));
         //A variável 'secret' precisa ser bem forte.
+
+        //Passport
+        app.use(passport.initialize());
+        app.use(passport.session());
 
         app.use(flash());
 
     //Middleware
         app.use((req, res, next)=>{
-            //Cria variáveis globais
+            //Declara variáveis globais
             res.locals.success_msg = req.flash("success_msg");
             res.locals.error_msg = req.flash("error_msg");
+            // res.locals.error = req.flash("error");
+            res.locals.user = req.user || null;
 
             next();
         });

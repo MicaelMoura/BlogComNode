@@ -11,6 +11,7 @@
     const passport = require('passport');
     const session = require('express-session');
     require('./config/auth')(passport);
+    const db = require("./config/db");
 
     //Módulos de rotas
     const admin = require('./routes/admin');
@@ -57,7 +58,7 @@
         mongoose.Promise = global.Promise;    
 
         //Conecta o Mongo
-        mongoose.connect("mongodb://localhost/blogapp")
+        mongoose.connect(db.mongoURI)
             .then(()=>{
                 console.log("Conectado ao MongoDB...");                
             })
@@ -97,7 +98,7 @@
 
 //Inicia Servidor
     //Variáveis
-    const PORT = 8081;
+    const PORT = process.env.PORT || 8081;
 
     //Executa Listen
     app.listen(PORT , ()=>{

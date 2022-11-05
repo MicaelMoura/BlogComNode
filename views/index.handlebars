@@ -1,11 +1,16 @@
 {{!-- Caixa de boas vindas --}}
 <div class="p-5 mb-4 bg-light border rounded-3">
     <div class="container-fluid">
-        <h1 class=" display-6">Bem-vindo ao BlogApp NodeJS</h1>
-        <p class="lead">Este é um blog de modelo, desenvolvido com NodeJS + Express + MongoDB.</p>
+        <h1 class=" display-6">Minhas Receitas</h1>
+        {{#if user}}
+        {{else}}
+        <p class="lead">Apenas as realmente deliciosas.</p>
         <hr>
-        <p><small>Fique à vontade. Teste tudo.</small></p>
-        <a href="/usuarios/cadastrar"><button class="btn btn-success" type="button">Cadastre-se</button></a>
+        <p>
+            Para ter acesso a mais opções.
+            <a href="/usuarios/cadastrar"><button class="btn btn-oxblood" type="button">Cadastre-se</button></a>
+        </p>
+        {{/if}}
     </div>
 </div>
 

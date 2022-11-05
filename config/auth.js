@@ -15,7 +15,7 @@ module.exports = (passport)=>{
       done(null, user._id); // O done é uma função de callback. O null é o erro (que nesse caso não teve). É bom salvar apenas o id do user
     });
     
-    //O Deserialize serve para pegar o cookie e transformar em objeto para vrificar se ele é válido ou não
+    //O Deserialize serve para pegar o cookie e transformar em objeto para veificar se ele é válido ou não
     passport.deserializeUser((id, done)=>{
       try {
         Usuario.findById({_id: id})

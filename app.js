@@ -18,13 +18,19 @@
     const postagens = require('./routes/postagens');
     const usuarios = require('./routes/usuarios');
 
+// Função para autenticação
+    function authenticationMiddleware(req, res, next){
+        if(req.isAuthenticated()) return next();
+        res.redirect('/usuarios/login');
+    }
+
 //Configurações
     //Session
         app.use(session({
             secret: "F&6xb!Ls*#d6$*aj6WL#@@U3",
             resave: true, // Se a cada requisição deve salvar a sessão
             saveUnitialized: true, // Se deve salvar sesões anônimas
-            cookie: { maxAge: 30 * 60 * 1000 } // Duração do cookie valido (min * seg * mili seg) [Nesse caso, será 2 minutos]
+            cookie: { maxAge: 30 * 60 * 1000 } // Duração do cookie valido (min * seg * mili seg) [Nesse caso, será 30 minutos]
             //store: // A sessão, por padrão, é salva na memória, para salvar no db precisa preencher isso
         }));
         //A variável 'secret' precisa ser bem forte.
@@ -40,7 +46,6 @@
             //Declara variáveis globais
             res.locals.success_msg = req.flash("success_msg");
             res.locals.error_msg = req.flash("error_msg");
-            // res.locals.error = req.flash("error");
             res.locals.user = req.user || null;
 
             next();
@@ -92,15 +97,23 @@
     });
 
 //Grupo de Roas
-    app.use("/admin", admin); //O admin é o prefixo para o grupo de rotas do arquivo admin.js
-    app.use("/postagens", postagens);
-    app.use("/usuarios", usuarios);
+app.use("/postagens", postagens);
+app.use("/usuarios", usuarios);
+app.use("/admin", authenticationMiddleware, admin); //O admin é o prefixo para o grupo de rotas do arquivo admin.js
 
 //Inicia Servidor
-    //Variáveis
-    const PORT = process.env.PORT || 8081;
+    if (process.env.PORT) {
+        const PORT = process.env.PORT;
 
-    //Executa Listen
-    app.listen(PORT , ()=>{
-        console.log("Servidor rodando na url: 'http://localhost:"+PORT+"'");
-    });
+        // Abre servidor
+        app.listen(PORT , ()=>{
+            console.log("Servidor rodando na url: 'https://receitas-minhas.herokuapp.com/'");
+        });
+    } else {
+        const PORT = 8081;
+        
+        // Abre servidor
+        app.listen(PORT , ()=>{
+            console.log("Servidor rodando na url: 'http://localhost:"+PORT+"'");
+        });
+    }

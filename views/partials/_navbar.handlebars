@@ -1,10 +1,11 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
   <div class="container-fluid">
-    <a class="navbar-brand" href="/">BlogApp NodeJS</a>
+    {{!-- <a class="navbar-brand" href="/">BlogApp NodeJS</a> --}}
+    <a class="navbar-brand" href="/"><img src="/img/logo_vt_branca.png" alt="Receitas Minhas" class="logo"></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
           <a class="nav-link" href="/">Home</a>
@@ -12,19 +13,22 @@
         <li class="nav-item">
           <a class="nav-link" href="/postagens/categorias">Categorias</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/admin">Admin</a>
-        </li>
+      </ul>
+      {{!-- Botões usuário --}}
+      <ul class="navbar-nav  mb-2 mb-lg-0 login">
         {{#if user}}
         <li class="nav-item">
-          <a class="nav-link" href="/usuarios/logout">Logout</a>
+          <a class="nav-link" href="/admin"><i class="fa-solid fa-shield-halved"></i> Admin</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/usuarios/logout"><i class="fa-sharp fa-solid fa-power-off"></i> Sair</a>
         </li>
         {{else}}
         <li class="nav-item">
-          <a class="nav-link" href="/usuarios/login">Login</a>
+          <a class="nav-link" href="/usuarios/login"><i class="fa-solid fa-user"></i> Login</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/usuarios/cadastrar">Cadastrar</a>
+          <a class="nav-link" href="/usuarios/cadastrar"><i class="fa-sharp fa-solid fa-right-to-bracket"></i> Cadastrar</a>
         </li>
         {{/if}}
       </ul>

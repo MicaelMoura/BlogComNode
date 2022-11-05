@@ -1,0 +1,84 @@
+/* 
+Cores do site
+    
+    Grain = #D7CEC7
+    Blackboard = #565656
+    Oxblood = #76323F
+    Tan = #C09F80
+
+Fonte
+
+font-family: proxima-nova,helvetica,arial,sans-serif!important
+*/
+
+/** Root **/
+:root{
+    --Grain: #ece9e6;
+    --Blackboard: #b8b8b8;
+    --Oxblood: #76323F;
+    --Tan: #C09F80;
+}
+
+/*** Body ***/
+body{
+    background-color: var(--Grain);
+}
+
+/*** NavBar ***/
+.navbar {
+    background-color: var(--Oxblood);
+}
+
+.logo{
+    height: 40px;
+    margin: 4px;
+}
+
+.login {
+    margin-left: auto;
+}
+
+/*** Container ***/
+.container{
+    margin-top: 90px;
+}
+
+/** Footer **/
+.footer {
+    background-color: var(--Blackboard);
+    font-size: small;
+    padding: 12px;
+}
+
+.footer-right {
+    position: absolute;
+    right: 12px;
+}
+
+/*** Home ***/
+    /*** Postagens ***/
+    .btn-oxblood{
+        background-color: var(--Oxblood);
+        color: white;
+    }
+
+    .btn-oxblood:hover{
+        background-color: var(white);
+        border-color: var(--Oxblood);
+        color: var(--Oxblood);
+    }
+
+    /*** Banner ***/
+
+
+/*** Categorias  ***/
+
+
+/*** Admin  ***/
+
+
+/*** Login  ***/
+
+
+/*** Cadastro  ***/
+
